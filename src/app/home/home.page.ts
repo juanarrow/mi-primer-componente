@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
+import { IonInput } from '@ionic/angular';
+import { PeopleService } from '../share/services/people.service';
 
-export interface Person{
-  name:string,
-  surname:string,
-  age:number
-}
+
+
 @Component({
   selector: 'app-home',
   templateUrl: 'home.page.html',
@@ -12,30 +11,39 @@ export interface Person{
 })
 export class HomePage {
 
-  people:Person[] = [];
-  constructor() {
-    this.people.push({
-      name:"Juan A.",
-      surname:"García Gómez",
-      age:47
-    });
-    this.people.push({
-      name:"Alejandro.",
-      surname:"García Gómez",
-      age:46
-    });
+  
+  constructor(
+    public peopleSvc:PeopleService
+  ) {
+    
+  }
 
-    this.people.push({
-      name:"Juan",
-      surname:"García Valencia",
-      age:5
-    });
+  onFavClicked(idx:number){
+    //this.people[idx].isFav = !this.people[idx].isFav
+  }
 
-    this.people.push({
-      name:"María del Mar",
-      surname:"Valencia Valencia",
-      age:47
-    });
+  // Método para manejar el clic del botón
+  async submit(nameInput: IonInput, surnameInput: IonInput, ageInput: IonInput) {
+    try {
+      // Obtener los elementos de entrada
+      const nameElement = await nameInput.getInputElement();
+      const surnameElement = await surnameInput.getInputElement();
+      const ageElement = await ageInput.getInputElement();
+
+      // Obtener los valores de los inputs
+      const name = nameElement.value;
+      const surname = surnameElement.value;
+      const age = ageElement.value;
+
+      this.peopleSvc.add({
+        name: name,
+        surname: surname,
+        age: age
+      });
+
+    } catch (error) {
+      console.error('Error al obtener los valores:', error);
+    }
   }
 
 }
